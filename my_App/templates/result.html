@@ -1,0 +1,39 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BMI result</title>
+</head>
+<!-- Google tag (gtag.js) Analytics-->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-VVGHEKP370"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-VVGHEKP370');
+</script>
+
+<body class="body-result">
+    <div class="result-container">
+        <h1 class="h1-result">BMI Result</h1>
+        <p id="name"></p>
+        <p id="age" class="p-result"></p>
+        <p id="email"></p>
+        <p class="p-result">Your BMI is <span id="bmi"></span>, which is considered <span class="status" id="status"></span>.</p>
+        <p id="comments" class="p-result"></p>
+        <p>Body Mass Index (BMI) is a simple calculation used to assess whether a person has a healthy body weight for their height.</p>  
+        <p>It is commonly used as a screening tool to categorize individuals into weight categories that may lead to health problems.</p> 
+        <p>The Ideal healthy BMI is 25 and below.</p>
+        <p>Maintaining a healthy BMI reduces the risk of conditions like heart disease, diabetes, and hypertension.</p>
+         <p>However, it’s best used in conjunction with other health metrics(Blood Pessure, Sugar level, Visceral fat) for a complete picture.</p>
+        <a href="{% url 'index' %}" class="button-result">Go Back</a>
+      </div>
+
+      <script src="{% static 'js/result.js' %}"></script>
+      
+</body>
+</html>
