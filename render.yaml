@@ -3,17 +3,17 @@ services:
     name: health-metric-app
     env: python
     buildCommand: |
-      echo "🟢 Starting build..."
+      echo "✅ Installing dependencies..."
       pip install -r requirements.txt
 
-      echo "📦 Collecting static files..."
+      echo "✅ Collecting static files..."
       python manage.py collectstatic --noinput
 
-      echo "🛠 Running migrations..."
-      python manage.py migrate --noinput
-
-      echo "✅ Build and migration completed."
-    startCommand: gunicorn BMI_calculator.wsgi:application
+    startCommand: |
+      echo "✅ Running migrations..." && \
+      python manage.py migrate --noinput && \
+      echo "🚀 Starting Gunicorn..." && \
+      gunicorn BMI_calculator.wsgi:application
     envVars:
       - key: DEBUG
         value: "False"
@@ -23,15 +23,3 @@ services:
         value: postgresql://healthuser:R73zfkFXJ4TQ5y1Oe40l28O08iQwm9WY@dpg-d1qmb27fte5s73dh7820-a/healthmetric_db
       - key: ALLOWED_HOSTS
         value: health-metric-app.onrender.com
-
-jobs:
-  - type: cron
-    name: ensure-migrations
-    schedule: "@on_deploy"  # This runs on every deploy
-    env: python
-    command: |
-      echo "🔁 Ensuring migrations are applied..."
-      python manage.py migrate
-      echo "✅ Migrations done."
-    envVars:
-      - fromService: health-metric-app
