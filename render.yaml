@@ -5,15 +5,7 @@ services:
     buildCommand: |
       echo "✅ Installing dependencies..."
       pip install -r requirements.txt
-
-      echo "✅ Collecting static files..."
-      python manage.py collectstatic --noinput
-
-    startCommand: |
-      echo "✅ Running migrations..." && \
-      python manage.py migrate --noinput && \
-      echo "🚀 Starting Gunicorn..." && \
-      gunicorn BMI_calculator.wsgi:application
+    startCommand: ./start.sh
     envVars:
       - key: DEBUG
         value: "False"
