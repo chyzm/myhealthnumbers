@@ -1,0 +1,108 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Full Health Chart</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light py-5">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="text-primary">📊 Health Metrics Over Time</h2>
+            <a href="{% url 'myAccount' %}" class="btn btn-secondary">
+                <i class="bi bi-arrow-left me-1"></i> Back to My Account
+            </a>
+        </div>
+
+        <canvas id="healthChart" height="100"></canvas>
+
+        <div class="mt-4">
+            <label class="me-3"><input type="checkbox" class="metric-toggle" data-metric="BMI" checked> BMI</label>
+            <label class="me-3"><input type="checkbox" class="metric-toggle" data-metric="BMR" checked> BMR</label>
+            <label class="me-3"><input type="checkbox" class="metric-toggle" data-metric="TDEE" checked> TDEE</label>
+            <label class="me-3"><input type="checkbox" class="metric-toggle" data-metric="MHR" checked> MHR</label>
+        </div>
+    </div>
+
+    <script>
+        const chartData = {{ chart_data|safe }};
+        const lastIndex = chartData.dates.length - 1;
+
+        const colors = {
+            BMI: 'rgba(255, 99, 132, 1)',
+            BMR: 'rgba(54, 162, 235, 1)',
+            TDEE: 'rgba(255, 206, 86, 1)',
+            MHR: 'rgba(75, 192, 192, 1)'
+        };
+
+        const datasets = ['BMI', 'BMR', 'TDEE', 'MHR'].map(metric => ({
+            label: metric,
+            data: chartData[metric.toLowerCase()],
+            borderColor: colors[metric],
+            backgroundColor: colors[metric].replace('1)', '0.1)'),
+            tension: 0.4,
+            fill: true,
+            pointRadius: ctx => ctx.dataIndex === lastIndex ? 6 : 3,
+            pointBackgroundColor: ctx => ctx.dataIndex === lastIndex ? colors[metric] : 'white'
+        }));
+
+        const bmiTargetPlugin = {
+            id: 'bmiTargetRange',
+            beforeDraw(chart) {
+                const yAxis = chart.scales.y;
+                const ctx = chart.ctx;
+                const top = yAxis.getPixelForValue(24.9);
+                const bottom = yAxis.getPixelForValue(18.5);
+                ctx.save();
+                ctx.fillStyle = 'rgba(0, 255, 0, 0.08)';
+                ctx.fillRect(chart.chartArea.left, top, chart.chartArea.right - chart.chartArea.left, bottom - top);
+                ctx.restore();
+            }
+        };
+
+        const ctx = document.getElementById('healthChart').getContext('2d');
+        const healthChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: chartData.dates,
+                datasets: datasets
+            },
+            options: {
+                responsive: true,
+                interaction: {
+                    mode: 'index',
+                    intersect: false
+                },
+                stacked: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Health Metrics Progress'
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: false,
+                        title: {
+                            display: true,
+                            text: 'Metric Value'
+                        }
+                    }
+                }
+            },
+            plugins: [bmiTargetPlugin]
+        });
+
+        // Toggle dataset visibility
+        document.querySelectorAll('.metric-toggle').forEach(input => {
+            input.addEventListener('change', () => {
+                const dataset = healthChart.data.datasets.find(d => d.label === input.dataset.metric);
+                dataset.hidden = !input.checked;
+                healthChart.update();
+            });
+        });
+    </script>
+</body>
+</html>

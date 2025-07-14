@@ -58,6 +58,9 @@ class User(AbstractBaseUser):
     phone_number = models.CharField(max_length=11)
     role = models.PositiveSmallIntegerField(choices=ROLE_CHOICE, default=CUSTOMER ) #null=True handles any errors (blank=True, null=True)
     
+    def is_active(self):
+        """Override to make sure is_active flag is checked"""
+        return self.is_active
     
     # required fields
     date_joined = models.DateTimeField(auto_now_add=True)
@@ -108,4 +111,40 @@ class UserProfile(models.Model):
         
     def __str__(self):
         return self.user.email
+    
+    # Add reference to latest metrics
+    latest_metrics = models.ForeignKey(
+        'HealthMetrics', 
+        on_delete=models.SET_NULL, 
+        blank=True, 
+        null=True,
+        related_name='user_latest_metrics'
+    )
+    
+    
+    # models.py - Add this new model
+class HealthMetrics(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='health_metrics')
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    # Basic info
+    age = models.PositiveSmallIntegerField()
+    weight = models.DecimalField(max_digits=5, decimal_places=2)
+    height = models.DecimalField(max_digits=5, decimal_places=2)
+    gender = models.CharField(max_length=10)
+    activity_level = models.DecimalField(max_digits=3, decimal_places=2)
+    
+    # Calculated metrics
+    bmi = models.DecimalField(max_digits=5, decimal_places=2)
+    bmi_category = models.CharField(max_length=20)
+    bmr = models.DecimalField(max_digits=10, decimal_places=2)
+    tdee = models.DecimalField(max_digits=10, decimal_places=2)
+    ibw = models.CharField(max_length=50)
+    mhr = models.DecimalField(max_digits=5, decimal_places=2)
+    
+    class Meta:
+        ordering = ['-created_at']
+    
+    def __str__(self):
+        return f"{self.user.username}'s metrics from {self.created_at}"
     

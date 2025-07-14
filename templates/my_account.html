@@ -1,0 +1,203 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Account - HealthMetrics</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .account-container {
+            max-width: 1200px;
+            margin: 30px auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .account-sidebar {
+            background: #343a40;
+            color: white;
+            padding: 30px 0;
+        }
+        .account-sidebar .nav-link {
+            color: rgba(255,255,255,0.8);
+            padding: 10px 20px;
+            border-radius: 0;
+        }
+        .account-sidebar .nav-link:hover, .account-sidebar .nav-link.active {
+            color: white;
+            background: rgba(255,255,255,0.1);
+        }
+        .account-content {
+            padding: 30px;
+        }
+        .profile-picture {
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 5px solid white;
+        }
+
+        @media (max-width: 767.98px) {
+            .account-container {
+                padding-top: 0 !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="account-container mt-md-0 mt-0">
+        <div class="row g-0">
+            <!-- Sidebar Navigation -->
+            <div class="col-md-3 account-sidebar">
+                <div class="text-center mb-4 ">  <!-- Added mt-md-0 mt-0 -->
+                    {% if user.userprofile.profile_picture %}
+                        <img src="{{ user.userprofile.profile_picture.url }}" class="profile-picture mb-2" alt="Profile Picture">
+                    {% else %}
+                        <i class="bi bi-person-circle" style="font-size: 100px;"></i>
+                    {% endif %}
+                    <h4>{{ user.first_name }} {{ user.last_name }}</h4>
+                    <p class="text-white">{{ user.email }}</p>
+                </div>
+                
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{% url 'myAccount' %}">
+                            <i class="bi bi-person me-2"></i> My Profile
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'healthHistory' %}">
+                            <i class="bi bi-heart-pulse me-2"></i> Health History
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'downloadResults' %}">
+                            <i class="bi bi-download me-2"></i> Download Results
+                        </a>
+                    </li>
+                  
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'changePassword' %}">
+                            <i class="bi bi-shield-lock me-2"></i> Change Password
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-danger" href="{% url 'deleteAccount' %}">
+                            <i class="bi bi-trash me-2"></i> Delete Account
+                        </a>
+                    </li>
+                    <li class="nav-item mt-md-4 mt-0">  <!-- Added mt-md-4 mt-0 -->
+                        <a class="nav-link" href="{% url 'logout' %}">
+                            <i class="bi bi-box-arrow-right me-2"></i> Logout
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            
+            <!-- Main Content Area -->
+            <div class="col-md-9 account-content">
+                <h2 class="mb-4">My Profile</h2>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card mb-4">
+                            <div class="card-header bg-primary text-white">
+                                <h5 class="mb-0">Personal Information</h5>
+                            </div>
+                            <div class="card-body">
+                                <p><strong>Name:</strong> {{ user.first_name }} {{ user.last_name }}</p>
+                                <p><strong>Email:</strong> {{ user.email }}</p>
+                                <p><strong>Username:</strong> {{ user.username }}</p>
+                                <p><strong>Phone:</strong> {{ user.phone_number }}</p>
+                                <a href="{% url 'editProfile' %}" class="btn btn-sm btn-primary mt-2">
+                                    <i class="bi bi-pencil me-1"></i> Edit Profile
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="card mb-4">
+                            <div class="card-header bg-primary text-white">
+                                <h5 class="mb-0">Address Information</h5>
+                            </div>
+                            <div class="card-body">
+                                {% if user.userprofile.address_line_1 %}
+                                    <p>{{ user.userprofile.address_line_1 }}</p>
+                                    {% if user.userprofile.address_line_2 %}
+                                        <p>{{ user.userprofile.address_line_2 }}</p>
+                                    {% endif %}
+                                    <p>
+                                        {{ user.userprofile.city }}, 
+                                        {{ user.userprofile.state }} 
+                                        {{ user.userprofile.pin_code }}
+                                    </p>
+                                    <p>{{ user.userprofile.country }}</p>
+                                {% else %}
+                                    <p class="text-muted">No address information available</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Latest Health Metrics -->
+                {% if user.userprofile.latest_metrics %}
+                <div class="card">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0">Latest Health Metrics</h5>
+                        
+                    </div>
+                    
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <p><strong>BMI:</strong> {{ user.userprofile.latest_metrics.bmi }} ({{ user.userprofile.latest_metrics.bmi_category }})</p>
+                                <p><strong>Weight:</strong> {{ user.userprofile.latest_metrics.weight }} kg</p>
+                            </div>
+                            <div class="col-md-4">
+                                <p><strong>BMR:</strong> {{ user.userprofile.latest_metrics.bmr }} kcal</p>
+                                <p><strong>TDEE:</strong> {{ user.userprofile.latest_metrics.tdee }} kcal</p>
+                            </div>
+                            <div class="col-md-4">
+                                <p><strong>Recorded:</strong> {{ user.userprofile.latest_metrics.created_at|date:"M d, Y" }}</p>
+                                <a href="{% url 'result' user.userprofile.latest_metrics.id %}" class="btn btn-sm btn-primary">
+                                    View Details
+                                </a>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <a href="{% url 'healthChart' %}" class="btn btn-outline-info mt-4">
+                    <i class="bi bi-bar-chart-line me-1"></i> View Full Health Chart
+                </a>
+                
+                {% endif %}
+
+
+                    <!-- Back to calculator button -->
+                    <a href="{% url 'calculator' %}" class="btn btn-primary inline-flex items-center justify-end mt-4 w-auto max-w-xs ml-auto px-4">
+                        <i class="bi bi-calculator me-2"></i> Back to Calculator
+                    </a>
+            </div>
+               
+
+        </div>
+        
+       
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

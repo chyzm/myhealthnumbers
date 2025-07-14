@@ -1,0 +1,113 @@
+.form-container input[type="text"],
+.form-container input[type="email"],
+.form-container input[type="password"],
+.form-container input[type="tel"] { /* Style input fields */
+    background-color: #333;
+    border: 1px solid #444;
+    color: #eee;
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 15px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #111;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    margin: 0;
+}
+
+.top-bar {
+    background-color: #111; /* Dark background */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+  }
+
+  .top-bar .container {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .top-bar .text-white {
+    color: #fff; /* White text */
+  }
+
+  .top-bar a {
+    color: #fff; /* White text for links */
+    text-decoration: none;
+  }
+
+  .top-bar a:hover {
+    color: #0f0; /* Green hover color */
+  }
+
+  .form-container {
+   
+        background-color: #222;
+        padding: 40px; /* Increased padding */
+        border-radius: 15px;
+        box-shadow: 0 0 20px rgba(0, 255, 0, 0.2);
+        margin: 20px auto;
+        width: 90%;
+        
+  }
+
+  .field-holder {
+    margin-bottom: 15px;
+  }
+
+  .field-holder label {
+    color: #0f0; /* Green text for labels */
+    display: block;
+    margin-bottom: 5px;
+  }
+
+  .errorlist {
+    color: red;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .bgcolor { /* Assuming this is the class for the submit button */
+    background-color: #0f0; /* Green button */
+    border: none;
+    color: #111; /* Dark text on button */
+    padding: 12px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+  .bgcolor:hover {
+    background-color: #0c0; /* Darker green on hover */
+  }
+
+  @media (max-width: 768px) {
+    .top-bar .container {
+      flex-direction: column; /* Stack elements on small screens */
+    }
+
+    .form-container {
+        width: 70%; /* Take up 70% width on larger screens */
+    }
+
+    .top-bar .text-white {
+      margin-bottom: 10px; /* Add some space between logo and link on small screens */
+    }
+  }
+
+  @media (max-width: 576px) { /* Styles for extra small screens (phones) */
+    .form-container {
+        padding: 15px; /* Reduce padding on smaller screens */
+    }
+    .field-holder{
+        margin-bottom: 5px;
+    }
+}

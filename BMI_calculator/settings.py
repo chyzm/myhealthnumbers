@@ -9,8 +9,11 @@ https://docs.djangoproject.com/en/5.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
-
+import os
 from pathlib import Path
+import pymysql
+pymysql.install_as_MySQLdb()
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -25,7 +28,7 @@ SECRET_KEY = 'django-insecure-c7r0t+=w+e_m*034)54hs%ke0^erlb^y+ewy12bxt@e84(&rw(
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -77,10 +80,18 @@ WSGI_APPLICATION = 'BMI_calculator.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'health_numbers_db',
+        'USER': 'root',               # Use your MySQL username
+        'PASSWORD': '',               # Your MySQL password (empty for XAMPP default)
+        'HOST': '127.0.0.1',          # Or 'localhost'
+        'PORT': '3306',               # Default MySQL port
+        'OPTIONS': {
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+        },
     }
 }
+
 
 AUTH_USER_MODEL = 'my_App.User'
 
@@ -137,10 +148,28 @@ AUTH_USER_MODEL = 'my_App.User'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR /'media'
 
+
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+
 #for message alerts for errors
 from django.contrib.messages import constants as messages
 
 MESSAGE_TAGS = {
-    messages.ERROR: "danger",
-   
+    messages.DEBUG: 'secondary',
+    messages.INFO: 'info',
+    messages.SUCCESS: 'success',
+    messages.WARNING: 'warning',
+    messages.ERROR: 'danger',
 }
+
+# Email Configuration
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = '587'
+EMAIL_HOST_USER = 'suavedef@gmail.com'
+EMAIL_HOST_PASSWORD = 'dwzkrlblgpwcxjpb'    #gmail app password created with app name django
+EMAIL_USE_TLS = True # Ensures email is sent securely
+DEFAULT_FROM_EMAIL = 'HEALTH METRICS <suavedef@gmail.com>'

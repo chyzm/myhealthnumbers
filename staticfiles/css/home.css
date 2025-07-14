@@ -1,0 +1,77 @@
+body {
+    background-image: url('../images/home-page.png'); /* Replace with your image URL */
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed; /* Keeps background fixed during scrolling */
+    color: white; /* Default text color for better visibility on dark backgrounds */
+    min-height: auto; /* Ensure full viewport height is covered */
+    margin: 0; /* Remove default body margins */
+    display: flex;
+    flex-direction: column;
+}
+
+.top-bar {
+    background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent black background */
+    padding: 10px;
+    width: 100%;
+    position: fixed; /* Fixed position for the top bar */
+    top: 0;
+    z-index: 100; /* Ensure it's on top of other content */
+}
+
+.content {
+    flex-grow: 1; /* Allows content to take up remaining space */
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Vertically center content */
+    align-items: center; /* Horizontally center content */
+    padding-top: 30px; /* Add padding to account for fixed top bar */
+    margin-top: 15%;
+}
+.btn{
+    margin: 0 5px;
+}
+@media (max-width: 768px) {
+    body {
+        background-size: cover; /* or background-size: auto 100%; */
+        background-position: center; /* Center the image */
+    }
+}
+
+.top-bar {
+    background-color: rgba(0, 0, 0, 0.7);
+    padding: 10px;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    z-index: 100;
+}
+
+.content {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding-top: 80px;
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
+.btn {
+    margin: 0 5px;
+}
+
+@media (max-width: 768px) {
+    .btn-group {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        margin-top: 10px;
+    }
+
+    .btn {
+        margin: 5px 0;
+        width: 100%;
+    }
+
+}

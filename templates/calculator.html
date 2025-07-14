@@ -5,82 +5,254 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BMI Calculator</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
-    integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-    <!-- Template Main CSS File -->
-    <link href="{% static 'css/stylesheet_fitness_court.css' %}" rel="stylesheet"/>
-    <link href="{% static 'css/calculator.css' %}" rel="stylesheet">
-
+    <title>Health Metrics Calculator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3B82F6',
+                        secondary: '#10B981',
+                        accent: '#F59E0B',
+                        dark: '#1F2937',
+                        light: '#F9FAFB'
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="icon" type="image/h_rite-icon" href="/images/favicon.png">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #F9FAFB 0%, #EFF6FF 100%);
+        }
+        
+        .input-health {
+            @apply w-full p-3 rounded-lg border-2 border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all;
+            background-color: #FFFFFF;
+        }
+        
+        .btn-primary {
+            @apply w-full py-3 px-6 bg-primary hover:bg-blue-700 text-white font-semibold rounded-lg shadow-md transition-all transform hover:scale-[1.02];
+        }
+        
+        .btn-secondary {
+            @apply w-full py-3 px-6 bg-secondary hover:bg-emerald-600 text-white font-semibold rounded-lg shadow-md transition-all transform hover:scale-[1.02];
+        }
+        
+        .card {
+            @apply bg-white rounded-xl shadow-lg overflow-hidden;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        
+        .header-gradient {
+            background: linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%);
+        }
+        
+        .converter-section {
+            background: linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 100%);
+            border: 1px solid #BFDBFE;
+        }
+    </style>
 </head>
 
-<!-- Google tag (gtag.js) Analytics-->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-VVGHEKP370"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-VVGHEKP370');
-</script>
-
-<body class="container">
-    
-        <header class="container-fluid bg-light py-3">
-            <div class="d-flex align-items-center justify-content-between bg-img">
-                <a href="index.html">
-                    <img class="img-fluid" src="{% static '' %}" alt="logo" style="width: 200px;">
-                </a>
-            
-            <!-- Collapsible Navigation -->
-            <div class="d-none d-md-block text-end">
-                <a style="color: black !important;" href="" class="mx-2 text-decoration-none ">MY ACCOUNT</a>
-                <a style="color: red !important;"  href="{% url 'logout' %}" class="mx-2 text-decoration-none ">LOGOUT</a>
-               
-            </div>
-           
-               
-                
+<body class="min-h-screen flex flex-col">
+    <!-- Header -->
+    <header class="header-gradient shadow-sm sticky top-0 z-10">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex items-center justify-between">
+                <div>
+                    <a href="{% url 'calculator' %}" class="flex items-center">
+                        <img src="{% static 'images/logo.png' %}" alt="Duriel Tech Logo" class="h-20">
+                        <span class="ml-2 text-white font-semibold text-lg hidden md:block">HealthMetrics</span>
+                    </a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="relative group">
+                        <button class="text-white hover:text-accent transition-colors flex items-center focus:outline-none" id="accountDropdown">
+                            {% if profile_picture %}
+                            <img src="{{ profile_picture }}" alt="Profile Picture" class="h-8 w-8 rounded-full mx-auto mb-1">
+                            {% else %}
+                            <i class="bi bi-person-circle mr-1"></i>
+                            {% endif %}
+                            <span class="mx-1"> My Account</span>
+                            <!--<i class="bi bi-chevron-down ml-1 text-xs"></i>-->
+                        </button>
+                        <div class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-20 hidden" id="dropdownMenu">
+                            <a href="{% url 'myAccount' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">My Profile</a>
+                            <a href="{% url 'healthHistory' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Health History</a>
+                            <a href="{% url 'healthChart' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Health Chart</a>  
+                            <a href="{% url 'downloadResults' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Download Results</a>
+                            <a href="{% url 'changePassword' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Change Password</a>
+                            <a href="{% url 'deleteAccount' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Delete Account</a>
+                            <a href="{% url 'logout' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Logout</a>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-
-        <div class="calculator mt-2">
-            <h2>Welcome {{first_name}}</h2>
-            <h1>BMI Calculator</h1>
-            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" >
-            <form onsubmit="event.preventDefault(); submitBMI();">
-               <input class="input-BMI" type="number" id="age" placeholder="Enter your age" step="1" required>
-               <input class="input-BMI" type="number" id="weight" placeholder="Enter your weight (kg)" step="0.01" required>
-               <input class="input-BMI" type="number" id="height" placeholder="Enter your height (m)" step="0.01" required>
-               <textarea id="comments" placeholder="Additional comments (optional)"></textarea>
-               <button type="submit" class="button-calc">Calculate BMI</button>
-            </form>
-        </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
-                
-                <address>
-                    <P>24 Akowonjo Road, EGBEDA, LAGOS.</P>
-                    <P>08149662833</P>
-                    <P>somtochiokaro@gmail.com</P>
-                    <a href="https://instagram.com" _blank><img src="{% static 'images\unique-icon-vector-removebg-preview.png' %}" alt="instagram logo" width="30" height="30"></a>
-                    <a href="https://x.com" _blank><img src="{% static 'images\images__1_-removebg-preview.png' %}" alt="X logo" width="30" height="30"></a>
-                    <a href="https://facebook.com"><img src="{% static 'images\20673-removebg-preview.png' %}" alt="Facebook" style="width: 30px;"></a>
-                </address>
-            </div>
-            <p class="last">DESIGNED AND MAINTAINED BY: DURIEL TECH ©2024</p>
     </header>
 
-   
-    
+    <!-- Main Content -->
+    <main class="flex-grow container mx-auto px-4 py-8">
+        <div class="max-w-md mx-auto">
+            <div class="card">
+                <!-- Welcome Header -->
+                <div class="bg-primary text-white p-6 text-center">
+                    <h1 class="text-2xl font-bold mb-1">
+                        Welcome, {% if user.first_name %}{{ user.first_name }}{% else %}User{% endif %}!
+                    </h1>
+                    <h2 class="text-lg font-semibold text-blue-100">Health Metrics Calculator</h2>
+                </div>
+
+
+
+                <div class="p-6">
+                    <form id="healthForm" method="POST" action="{% url 'calculator' %}" class="space-y-5">
+                        {% csrf_token %}
+                        <div class="max-w-md mx-auto space-y-4 px-4 sm:px-0">
+                            <!-- Age Input -->
+                            <div class="grid grid-cols-1 gap-1">
+                                <label for="age" class="text-sm font-medium text-gray-700">Age</label>
+                                <input type="number" id="age" name="age" placeholder="e.g. 28" 
+                                       class="w-full px-4 py-3 text-center rounded-lg border-2 border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
+                                       step="1" min="1" max="120" required>
+                            </div>
+                            
+                            <!-- Weight Input -->
+                            <div class="grid grid-cols-1 gap-1">
+                                <label for="weight" class="text-sm font-medium text-gray-700">Weight (kg)</label>
+                                <input type="number" id="weight" name="weight" placeholder="e.g. 72.5" 
+                                       class="w-full px-4 py-3 text-center rounded-lg border-2 border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
+                                       step="0.1" min="20" max="300" required>
+                            </div>
+                            
+                            <!-- Height Input -->
+                            <div class="grid grid-cols-1 gap-1">
+                                <label for="height" class="text-sm font-medium text-gray-700">Height (cm)</label>
+                                <input type="number" id="height" name="height" placeholder="e.g. 175.2" 
+                                       class="w-full px-4 py-3 text-center rounded-lg border-2 border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
+                                       step="0.1" min="100" max="250" required>
+                            </div>
+                            
+                            <!-- Gender Select -->
+                            <div class="grid grid-cols-1 gap-1">
+                                <label for="gender" class="text-sm font-medium text-gray-700">Gender</label>
+                                <select id="gender" name="gender" class="w-full px-4 py-3 text-center rounded-lg border-2 border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all appearance-none bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9ImN1cnJlbnRDb2xvciIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIGNsYXNzPSJsdWNpZGUgbHVjaWRlLWNoZXZyb24tZG93biI+PHBhdGggZD0ibTYgOSA2IDYgNi02Ii8+PC9zdmc+')] bg-no-repeat bg-[center_right_1rem]">
+                                    <option value="male">Male</option>
+                                    <option value="female">Female</option>
+                                </select>
+                            </div>
+                            
+                            <!-- Activity Level Select -->
+                            <div class="grid grid-cols-1 gap-1">
+                                <label for="activity" class="text-sm font-medium text-gray-700">Activity Level</label>
+                                <select id="activity" name="activity" class="w-full px-4 py-3 text-center rounded-lg border-2 border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all appearance-none bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9ImN1cnJlbnRDb2xvciIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIGNsYXNzPSJsdWNpZGUgbHVjaWRlLWNoZXZyb24tZG93biI+PHBhdGggZD0ibTYgOSA2IDYgNi02Ii8+PC9zdmc+')] bg-no-repeat bg-[center_right_1rem]">
+                                    <option value="1.2">Sedentary (little or no exercise)</option>
+                                    <option value="1.375">Light Activity (1-3 days/week)</option>
+                                    <option value="1.55">Moderate Activity (3-5 days/week)</option>
+                                    <option value="1.725">Very Active (6-7 days/week)</option>
+                                    <option value="1.9">Super Active (physical job or 2x training)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="relative inline-flex items-center justify-center px-6 py-3 text-lg font-semibold text-white transition-all duration-200 bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg shadow-md hover:from-blue-600 hover:to-blue-700 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75 active:scale-[0.98]">
+                            <i class="bi bi-calculator mr-2 text-xl"></i>
+                            Calculate Health Metrics
+                            <span class="absolute right-4 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                <i class="bi bi-arrow-right"></i>
+                            </span>
+                        </button>
+                    </form>
+
+                    <!-- Converter Section -->
+                    <div class="converter-section mt-8 p-5 rounded-lg">
+                        <h4 class="text-center font-semibold text-blue-800 mb-3">
+                            <i class="bi bi-rulers mr-2"></i>Height Converter
+                        </h4>
+                        <p class="text-center text-sm text-blue-600 mb-4">Convert feet to centimeters</p>
+                        
+                        <div class="flex flex-col">
+                            <input type="number" id="feet" placeholder="Enter height in feet" 
+                                   class="input-health text-center mb-3"
+                                   oninput="convertFeetToMeters()">
+                            <div class="mt-2">
+                                <p id="conversionResult" class="text-center font-medium text-blue-700 text-lg"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white py-6 border-t">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-center space-x-6 mb-4">
+                <a href="https://www.instagram.com/duriel_tech/" target="_blank" 
+                   class="text-pink-600 hover:text-pink-800 text-xl transition-colors">
+                    <i class="bi bi-instagram"></i>
+                </a>
+                <a href="https://x.com/duriel_tech?s=21" target="_blank" 
+                   class="text-gray-800 hover:text-black text-xl transition-colors">
+                    <i class="bi bi-twitter-x"></i>
+                </a>
+                <a href="https://www.facebook.com/share/19rTH32Svt/?mibextid=LQQJ4d" target="_blank" 
+                   class="text-blue-600 hover:text-blue-800 text-xl transition-colors">
+                    <i class="bi bi-facebook"></i>
+                </a>
+                <a href="https://linkedin.com" target="_blank" 
+                   class="text-blue-700 hover:text-blue-900 text-xl transition-colors">
+                    <i class="bi bi-linkedin"></i>
+                </a>
+            </div>
+            <p class="text-center text-sm text-gray-500">
+                &copy; 2025 Duriel Tech. All rights reserved.
+            </p>
+        </div>
+    </footer>
 
     <script src="{% static 'js/result.js' %}"></script>
+    <script src="{% static 'js/convert.js' %}"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+
+    <script>
+        function convertFeetToMeters() {
+            const feet = document.getElementById("feet").value;
+            if (feet) {
+                const centimeters = (feet * 30.48).toFixed(2);
+                document.getElementById("conversionResult").innerHTML = 
+                    `<strong>${feet} feet</strong> = <strong class="text-primary">${centimeters} cm</strong>`;
+            } else {
+                document.getElementById("conversionResult").textContent = "";
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const dropdownButton = document.getElementById('accountDropdown');
+            const dropdownMenu = document.getElementById('dropdownMenu');
+            
+            dropdownButton.addEventListener('click', function(e) {
+                e.preventDefault();
+                dropdownMenu.classList.toggle('hidden');
+            });
+            
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!dropdownButton.contains(e.target) && !dropdownMenu.contains(e.target)) {
+                    dropdownMenu.classList.add('hidden');
+                }
+            });
+        });
+    </script>
 </body>
-
-
-
-  </html>
-  
+</html>
