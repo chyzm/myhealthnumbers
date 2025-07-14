@@ -13,6 +13,11 @@ import os
 from pathlib import Path
 import pymysql
 pymysql.install_as_MySQLdb()
+from dotenv import load_dotenv
+
+# Load environment variables from .env
+load_dotenv()
+
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -23,10 +28,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-c7r0t+=w+e_m*034)54hs%ke0^erlb^y+ewy12bxt@e84(&rw('
+SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
 ALLOWED_HOSTS = ['*']
 
@@ -81,11 +86,11 @@ WSGI_APPLICATION = 'BMI_calculator.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'health_numbers_db',
-        'USER': 'root',               # Use your MySQL username
-        'PASSWORD': '',               # Your MySQL password (empty for XAMPP default)
-        'HOST': '127.0.0.1',          # Or 'localhost'
-        'PORT': '3306',               # Default MySQL port
+        'NAME': os.getenv('DB_NAME'),
+        'USER': os.getenv('DB_USER'),
+        'PASSWORD': os.getenv('DB_PASSWORD'),
+        'HOST': os.getenv('DB_HOST'),
+        'PORT': os.getenv('DB_PORT'),
         'OPTIONS': {
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
         },
@@ -94,6 +99,16 @@ DATABASES = {
 
 
 AUTH_USER_MODEL = 'my_App.User'
+
+
+# Add these to settings.py for production
+SECURE_HSTS_SECONDS = 31536000  # 1 year
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
+SECURE_SSL_REDIRECT = True
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 
 # Password validation
@@ -165,11 +180,10 @@ MESSAGE_TAGS = {
 }
 
 # Email Configuration
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = '587'
 EMAIL_HOST_USER = 'suavedef@gmail.com'
-EMAIL_HOST_PASSWORD = 'dwzkrlblgpwcxjpb'    #gmail app password created with app name django
-EMAIL_USE_TLS = True # Ensures email is sent securely
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_PASSWORD')
+EMAIL_USE_TLS = True 
 DEFAULT_FROM_EMAIL = 'HEALTH METRICS <suavedef@gmail.com>'
