@@ -33,15 +33,16 @@ SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
 DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
 
-# ALLOWED_HOSTS = ['']
-# ALLOWED_HOSTS = [
-#     'localhost',
-#     '127.0.0.1',
-#     'health-metric-app-production.up.railway.app',
-#     '[::1]'
-# ]
+ALLOWED_HOSTS = ['']
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+    'health-metric-app-production.up.railway.app',
+    'myhealthnumbers-production.up.railway.app',
+    '[::1]'
+]
 
-ALLOWED_HOSTS = ['*']  # for now to test, then restrict later
+# ALLOWED_HOSTS = ['*']  # for now to test, then restrict later
 
 
 
