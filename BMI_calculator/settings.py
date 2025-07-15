@@ -30,10 +30,17 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv('DEBUG', '')
+DEBUG = os.getenv('DEBUG', 'False') == 'True'
+
 
 # ALLOWED_HOSTS = ['']
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'https://health-metric-app-production.up.railway.app/', '[::1]']
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+    'health-metric-app-production.up.railway.app',
+    '[::1]'
+]
+
 
 
 
@@ -104,8 +111,9 @@ WSGI_APPLICATION = 'BMI_calculator.wsgi.application'
 import os
 import dj_database_url
 
-if os.environ.get('RAILWAY_STATIC_URL'):  # or just use "RAILWAY_ENVIRONMENT" as fallback
-  DATABASES = {
+import dj_database_url
+
+DATABASES = {
     "default": dj_database_url.config(
         default=os.getenv("DATABASE_URL"),
         conn_max_age=600,
@@ -113,21 +121,31 @@ if os.environ.get('RAILWAY_STATIC_URL'):  # or just use "RAILWAY_ENVIRONMENT" as
     )
 }
 
+
+# if os.environ.get('RAILWAY_STATIC_URL'):  # or just use "RAILWAY_ENVIRONMENT" as fallback
+#   DATABASES = {
+#     "default": dj_database_url.config(
+#         default=os.getenv("DATABASE_URL"),
+#         conn_max_age=600,
+#         conn_health_checks=True,
+#     )
+# }
+
     
-else:
-    DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.getenv('DB_NAME'),
-        'USER': os.getenv('DB_USER'),
-        'PASSWORD': os.getenv('DB_PASSWORD'),
-        'HOST': os.getenv('DB_HOST'),
-        'PORT': os.getenv('DB_PORT'),
-        'OPTIONS': {
-            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
-        },
-    }
-}
+# else:
+#     DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': os.getenv('DB_NAME'),
+#         'USER': os.getenv('DB_USER'),
+#         'PASSWORD': os.getenv('DB_PASSWORD'),
+#         'HOST': os.getenv('DB_HOST'),
+#         'PORT': os.getenv('DB_PORT'),
+#         'OPTIONS': {
+#             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+#         },
+#     }
+# }
 
 
 
