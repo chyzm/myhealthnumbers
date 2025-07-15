@@ -1,43 +1,114 @@
-{% load static  %}
+{% load static %}
 
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HOME</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-    <link href="{% static 'css/home.css' %}" rel="stylesheet">
+    <title>HealthMetrics - Home</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3B82F6',
+                        secondary: '#10B981',
+                        accent: '#F59E0B',
+                        dark: '#1F2937',
+                        light: '#F9FAFB'
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #F9FAFB 0%, #EFF6FF 100%);
+            min-height: 100vh;
+        }
+        
+        .header-gradient {
+            background: linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%);
+        }
+        
+        .card {
+            @apply bg-white rounded-xl shadow-lg overflow-hidden;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        
+        .btn-primary {
+            @apply w-full py-3 px-6 bg-primary hover:bg-blue-700 text-white font-semibold rounded-lg shadow-md transition-all transform hover:scale-[1.02];
+        }
+    </style>
 </head>
 
-<body>
-
-    <div class="top-bar">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-md-6 text-start">
-                    Developed and maintained by<a href="https://durieltech.vercel.app/" target="_blank" style="text-decoration: none; color: white;" class="text-warning"> Duriel Tech</a>
-                </div>
-                <div class="col-md-6 text-end">
-                    <div class="btn-group" role="group" aria-label="Basic mixed styles example">
-                        <button type="button" class="btn btn-outline-light"><a  href="{% url 'login' %}" class="text-decoration-none text-white">Login</a></button>
-                        <button type="button" class="btn btn-outline-light"><a  href="{% url 'registerUser' %}" class="text-decoration-none text-white">Register</a></button>
-                      </div>
+<body class="flex flex-col min-h-screen">
+    <!-- Header -->
+    <header class="header-gradient shadow-sm">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <div>
+                    <a href="#" class="flex items-center">
+                        <img src="{% static 'images/logo.png' %}" alt="HealthMetrics Logo" class="h-12">
+                        <span class="ml-2 text-white font-semibold text-xl">HealthMetrics</span>
+                    </a>
                 </div>
             </div>
         </div>
-    </div>
+    </header>
 
-    <div class="content">
-        <p>Register or login to Calculate your BMI</p>
-        <p>We will also mail you healthy recommendations.</p>
-    </div>
+    <!-- Main Content -->
+    <main class="flex-grow container mx-auto px-4 py-8">
+        <div class="max-w-md mx-auto">
+            <div class="card">
+                <div class="bg-primary text-white p-6 text-center">
+                    <h1 class="text-2xl font-bold mb-2">Track Your Health Metrics</h1>
+                    <p class="text-blue-100">Get personalized health insights</p>
+                </div>
+                
+                <div class="p-6 text-center">
+                    <div class="mb-8">
+                        {% comment %} <img src="{% static 'images/health.svg' %}" alt="Health Illustration" class="w-64 mx-auto mb-6"> {% endcomment %}
+                        <h2 class="text-xl font-semibold text-gray-800 mb-4">Calculate Your BMI, BMR, and More</h2>
+                        <p class="text-gray-600 mb-6">Get comprehensive health metrics and personalized recommendations to improve your wellbeing.</p>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <a href="{% url 'login' %}" class="btn-primary inline-flex items-center justify-center">
+                            <i class="bi bi-box-arrow-in-right mr-2"></i> Login
+                        </a>
+                        <a href="{% url 'registerUser' %}" class="inline-block w-full py-3 px-6 bg-white hover:bg-gray-50 text-primary font-semibold rounded-lg border-2 border-primary shadow-sm transition-all">
+                            Create Account
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
-        crossorigin="anonymous"></script>
+    <!-- Footer -->
+    <footer class="bg-white py-6 border-t">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-center space-x-6 mb-4">
+                <a href="https://instagram.com/duriel_tech" target="_blank" class="text-gray-600 hover:text-pink-600 text-xl">
+                    <i class="bi bi-instagram"></i>
+                </a>
+                <a href="https://x.com/duriel_tech" target="_blank" class="text-gray-600 hover:text-black text-xl">
+                    <i class="bi bi-twitter-x"></i>
+                </a>
+                <a href="https://facebook.com" target="_blank" class="text-gray-600 hover:text-blue-700 text-xl">
+                    <i class="bi bi-facebook"></i>
+                </a>
+            </div>
+            <p class="text-center text-sm text-gray-500">
+                &copy; 2025 Duriel Tech. All rights reserved.
+            </p>
+        </div>
+    </footer>
 </body>
-
 </html>

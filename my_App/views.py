@@ -45,6 +45,9 @@ def index(request):
 #     return render(request, 'registerUser.html', context)
 
 # views.py - Update registerUser view
+from django.db import transaction
+
+
 def registerUser(request):
     if request.user.is_authenticated:
         messages.warning(request, 'You are already logged in!')
@@ -151,6 +154,7 @@ def logout(request):
     auth.logout(request)
     messages.info(request, 'logged out!')
     return redirect('login')
+
 
 
 @login_required

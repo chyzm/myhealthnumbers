@@ -5,156 +5,356 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Health Results</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
-    <link href="{% static 'css/result.css' %}" rel="stylesheet">
-
+    <title>HealthMetrics - Results</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-      
-        gtag('config', 'G-VVGHEKP370');
-      </script>
-</head>
-
-<body>
-    <div class="result-container">
-        <h1>🎉 Your Health Results Are Ready! 🎉</h1>
-        <h2>Key Health Numbers</h2>
-
-    <!-- result.html - Update the parameters -->
-            
-    <div class="result-item">
-        <strong>📏 BMI:</strong> 
-        <span class="text-danger" id="bmi">{{ metrics.bmi|floatformat:2 }}</span>
-        (<span id="bmiCategory">{{ metrics.bmi_category }}</span>)
-    </div>
-            <div class="result-item"><strong>🔥 BMR:</strong> <span class="text-danger">{{ metrics.bmr }}</span> kcal</div>
-            <div class="result-item"><strong>⚡ TDEE:</strong> <span class="text-danger">{{ metrics.tdee }}</span> kcal</div>
-            <div class="result-item"><strong>⚖️ IBW:</strong> <span class="text-danger">{{ metrics.ibw }}</span></div>
-            <div class="result-item"><strong>❤️ MHR:</strong> <span class="text-danger">{{ metrics.mhr }}</span> bpm</div>
-
-
-        <hr>
-
-        <div class="mt-5">
-            <h3 class="mb-3">📊 Health Progress Over Time</h3>
-            <div class="mb-4">
-                <h4 class="mb-2 font-semibold">Toggle Metrics:</h4>
-                <label class="mr-4"><input type="checkbox" class="metric-toggle" data-metric="BMI" checked> BMI</label>
-                <label class="mr-4"><input type="checkbox" class="metric-toggle" data-metric="BMR" checked> BMR</label>
-                <label class="mr-4"><input type="checkbox" class="metric-toggle" data-metric="TDEE" checked> TDEE</label>
-                <label class="mr-4"><input type="checkbox" class="metric-toggle" data-metric="MHR" checked> MHR</label>
-            </div>
-            
-            <canvas id="healthProgressChart" width="100%" height="50"></canvas>
-            
-        </div>
-
-
-        <hr>
-        
-
-        <h3>What These Numbers Mean</h3>
-        <p><strong>📏 BMI (Body Mass Index):</strong> A measure of body fat based on height & weight. A healthy range is <span class="text-danger">18.5 - 24.9</span>.</p>
-        <p><strong>🔥 BMR (Basal Metabolic Rate):</strong> Calories needed for basic body functions at rest.</p>
-        <p><strong>⚡ TDEE (Total Daily Energy Expenditure):</strong> The total calories burned daily, including activity.</p>
-        <p><strong>⚖️ IBW (Ideal Body Weight):</strong> The healthy weight range for your height.</p>
-        <p><strong>❤️ MHR (Maximum Heart Rate):</strong> The max safe heart rate during exercise, based on age.</p>
-
-        <a href="{% url 'calculator' %}" class="button-result">🔙 Go Back</a>
-    </div>
-
-    <!--<script src="{% static 'js/result.js' %}"></script>-->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-   
-    const chartData = {{ chart_data|safe }};
-    const lastIndex = chartData.dates.length - 1;
-
-    const colors = {
-        BMI: 'rgba(255, 99, 132, 1)',
-        BMR: 'rgba(54, 162, 235, 1)',
-        TDEE: 'rgba(255, 206, 86, 1)',
-        MHR: 'rgba(75, 192, 192, 1)'
-    };
-
-    const datasets = ['BMI', 'BMR', 'TDEE', 'MHR'].map((metric, index) => ({
-        label: metric,
-        data: chartData[metric.toLowerCase()],
-        borderColor: colors[metric],
-        backgroundColor: colors[metric].replace('1)', '0.1)'),
-        tension: 0.4,
-        fill: true,
-        pointRadius: (ctx) => ctx.dataIndex === lastIndex ? 6 : 3,
-        pointBackgroundColor: (ctx) => ctx.dataIndex === lastIndex ? colors[metric] : 'white',
-        hidden: false
-    }));
-
-    // Custom plugin to draw BMI target range
-    const bmiTargetPlugin = {
-        id: 'bmiTargetRange',
-        beforeDraw(chart) {
-            const yAxis = chart.scales.y;
-            const ctx = chart.ctx;
-            const top = yAxis.getPixelForValue(24.9);
-            const bottom = yAxis.getPixelForValue(18.5);
-            ctx.save();
-            ctx.fillStyle = 'rgba(0, 255, 0, 0.08)';
-            ctx.fillRect(chart.chartArea.left, top, chart.chartArea.right - chart.chartArea.left, bottom - top);
-            ctx.restore();
-        }
-    };
-
-    const config = {
-        type: 'line',
-        data: {
-            labels: chartData.dates,
-            datasets: datasets
-        },
-        options: {
-            responsive: true,
-            interaction: {
-                mode: 'index',
-                intersect: false
-            },
-            stacked: false,
-            plugins: {
-                title: {
-                    display: true,
-                    text: 'Health Metrics Over Time'
-                }
-            },
-            scales: {
-                y: {
-                    beginAtZero: false,
-                    title: {
-                        display: true,
-                        text: 'Metric Value'
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3B82F6',
+                        secondary: '#10B981',
+                        accent: '#F59E0B',
+                        dark: '#1F2937',
+                        light: '#F9FAFB'
                     }
                 }
             }
-        },
-        plugins: [bmiTargetPlugin]
-    };
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #F9FAFB 0%, #EFF6FF 100%);
+            min-height: 100vh;
+        }
+        
+        .header-gradient {
+            background: linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%);
+        }
+        
+        .card {
+            @apply bg-white rounded-xl shadow-lg overflow-hidden;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        
+        .btn-primary {
+            @apply py-3 px-6 bg-primary hover:bg-blue-700 text-white font-semibold rounded-lg shadow-md transition-all transform hover:scale-[1.02];
+        }
+        
+        .metric-card {
+            @apply bg-white rounded-lg p-4 shadow-sm border border-gray-100;
+        }
+        
+        .bmi-normal {
+            background-color: rgba(16, 185, 129, 0.1);
+            border-left: 4px solid #10B981;
+        }
+        
+        .bmi-warning {
+            background-color: rgba(245, 158, 11, 0.1);
+            border-left: 4px solid #F59E0B;
+        }
+        
+        .bmi-danger {
+            background-color: rgba(239, 68, 68, 0.1);
+            border-left: 4px solid #EF4444;
+        }
+    </style>
+</head>
 
-    const ctx = document.getElementById('healthProgressChart').getContext('2d');
-    const healthChart = new Chart(ctx, config);
+<body class="flex flex-col min-h-screen">
+    <!-- Header -->
+    <header class="header-gradient shadow-sm sticky top-0 z-10">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <div>
+                    <a href="{% url 'calculator' %}" class="flex items-center">
+                        <img src="{% static 'images/logo.png' %}" alt="HealthMetrics Logo" class="h-12">
+                        <span class="ml-2 text-white font-semibold text-xl">HealthMetrics</span>
+                    </a>
+                </div>
+                <a href="{% url 'calculator' %}" class="text-white hover:text-accent font-medium">
+                    <i class="bi bi-arrow-left mr-1"></i> Back
+                </a>
+            </div>
+        </div>
+    </header>
 
-    // Toggle metric visibility
-    document.querySelectorAll('.metric-toggle').forEach(input => {
-        input.addEventListener('change', () => {
-            const metric = input.dataset.metric;
-            const dataset = healthChart.data.datasets.find(d => d.label === metric);
-            dataset.hidden = !input.checked;
-            healthChart.update();
-        });
-    });
+    <!-- Main Content -->
+    <main class="flex-grow container mx-auto px-4 py-8">
+        <div class="max-w-2xl mx-auto">
+            <div class="card">
+                <div class="bg-primary text-white p-6 text-center">
+                    <h1 class="text-2xl font-bold">Your Health Results</h1>
+                    <p class="text-blue-100">Comprehensive health metrics analysis</p>
+                </div>
+                
+                <div class="p-6">
+                    <!-- Key Metrics -->
+                    <div class="mb-8">
+                        <h2 class="text-xl font-semibold text-gray-800 mb-4">Key Health Metrics</h2>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                            <!-- BMI Card -->
+                            <div class="metric-card {% if metrics.bmi_category == 'Normal weight' %}bmi-normal{% elif metrics.bmi_category == 'Overweight' or metrics.bmi_category == 'Underweight' %}bmi-warning{% else %}bmi-danger{% endif %}">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <h3 class="font-medium text-gray-700">BMI</h3>
+                                        <p class="text-2xl font-bold text-gray-900">{{ metrics.bmi|floatformat:2 }}</p>
+                                        <p class="text-sm {% if metrics.bmi_category == 'Normal weight' %}text-green-600{% elif metrics.bmi_category == 'Overweight' or metrics.bmi_category == 'Underweight' %}text-yellow-600{% else %}text-red-600{% endif %}">
+                                            {{ metrics.bmi_category }}
+                                        </p>
+                                    </div>
+                                    <div class="bg-blue-100 p-3 rounded-full">
+                                        <i class="bi bi-speedometer2 text-blue-600 text-xl"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- BMR Card -->
+                            <div class="metric-card">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <h3 class="font-medium text-gray-700">BMR</h3>
+                                        <p class="text-2xl font-bold text-gray-900">{{ metrics.bmr }} kcal</p>
+                                        <p class="text-sm text-gray-500">Basal Metabolic Rate</p>
+                                    </div>
+                                    <div class="bg-green-100 p-3 rounded-full">
+                                        <i class="bi bi-fire text-green-600 text-xl"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- TDEE Card -->
+                            <div class="metric-card">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <h3 class="font-medium text-gray-700">TDEE</h3>
+                                        <p class="text-2xl font-bold text-gray-900">{{ metrics.tdee }} kcal</p>
+                                        <p class="text-sm text-gray-500">Daily Energy Expenditure</p>
+                                    </div>
+                                    <div class="bg-yellow-100 p-3 rounded-full">
+                                        <i class="bi bi-lightning-charge text-yellow-600 text-xl"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- IBW Card -->
+                            <div class="metric-card">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <h3 class="font-medium text-gray-700">IBW</h3>
+                                        <p class="text-2xl font-bold text-gray-900">{{ metrics.ibw }} kg</p>
+                                        <p class="text-sm text-gray-500">Ideal Body Weight</p>
+                                    </div>
+                                    <div class="bg-purple-100 p-3 rounded-full">
+                                        <i class="bi bi-bullseye text-purple-600 text-xl"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h3 class="font-medium text-gray-700">MHR</h3>
+                                <p class="text-2xl font-bold text-gray-900">{{ metrics.mhr }} bpm</p>
+                                <p class="text-sm text-gray-500">Max Heart Rate</p>
+                            </div>
+                            <div class="bg-red-100 p-3 rounded-full">
+                                <i class="bi bi-heart-pulse text-red-600 text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Health Progress Chart -->
+                    <div class="mb-8">
+                        <h2 class="text-xl font-semibold text-gray-800 mb-4">Health Progress Over Time</h2>
+                        <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
+                            <canvas id="healthProgressChart" width="100%" height="300"></canvas>
+                        </div>
+                    </div>
+                    
+                    <!-- Metric Explanations -->
+                    <div class="mb-6">
+                        <h2 class="text-xl font-semibold text-gray-800 mb-4">Understanding Your Metrics</h2>
+                        
+                        <div class="space-y-4">
+                            <div class="p-4 bg-blue-50 rounded-lg">
+                                <h3 class="font-medium text-blue-800 flex items-center">
+                                    <i class="bi bi-speedometer2 mr-2"></i> BMI (Body Mass Index)
+                                </h3>
+                                <p class="text-gray-700 mt-1">
+                                    A measure of body fat based on height & weight. A healthy range is <span class="font-semibold">18.5 - 24.9</span>.
+                                </p>
+                            </div>
+                            
+                            <div class="p-4 bg-green-50 rounded-lg">
+                                <h3 class="font-medium text-green-800 flex items-center">
+                                    <i class="bi bi-fire mr-2"></i> BMR (Basal Metabolic Rate)
+                                </h3>
+                                <p class="text-gray-700 mt-1">
+                                    Calories needed for basic body functions at rest.
+                                </p>
+                            </div>
+                            
+                            <div class="p-4 bg-yellow-50 rounded-lg">
+                                <h3 class="font-medium text-yellow-800 flex items-center">
+                                    <i class="bi bi-lightning-charge mr-2"></i> TDEE (Total Daily Energy Expenditure)
+                                </h3>
+                                <p class="text-gray-700 mt-1">
+                                    The total calories burned daily, including activity.
+                                </p>
+                            </div>
+                            
+                            <div class="p-4 bg-purple-50 rounded-lg">
+                                <h3 class="font-medium text-purple-800 flex items-center">
+                                    <i class="bi bi-bullseye mr-2"></i> IBW (Ideal Body Weight)
+                                </h3>
+                                <p class="text-gray-700 mt-1">
+                                    The healthy weight range for your height.
+                                </p>
+                            </div>
 
+                            <div class="p-4 bg-red-50 rounded-lg">
+                                <h3 class="font-medium text-red-800 flex items-center">
+                                    <i class="bi bi-heart-pulse mr-2"></i> MHR (Maximum Heart Rate)
+                                </h3>
+                                <p class="text-gray-700 mt-1">
+                                    The max safe heart rate during exercise, based on your age.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Action Buttons -->
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <a href="{% url 'calculator' %}" class="btn-primary flex-1 text-center">
+                            <i class="bi bi-calculator mr-2"></i> Recalculate
+                        </a>
+                        <a href="{% url 'healthHistory' %}" class="flex-1 text-center py-3 px-6 bg-white hover:bg-gray-50 text-gray-800 font-semibold rounded-lg border-2 border-gray-200 shadow-sm transition-all">
+                            <i class="bi bi-clock-history mr-2"></i> View History
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
 
-</script>
+    <!-- Footer -->
+    <footer class="bg-white py-6 border-t">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-center space-x-6 mb-4">
+                <a href="https://instagram.com/duriel_tech" target="_blank" class="text-gray-600 hover:text-pink-600 text-xl">
+                    <i class="bi bi-instagram"></i>
+                </a>
+                <a href="https://x.com/duriel_tech" target="_blank" class="text-gray-600 hover:text-black text-xl">
+                    <i class="bi bi-twitter-x"></i>
+                </a>
+                <a href="https://facebook.com" target="_blank" class="text-gray-600 hover:text-blue-700 text-xl">
+                    <i class="bi bi-facebook"></i>
+                </a>
+            </div>
+            <p class="text-center text-sm text-gray-500">
+                &copy; 2025 Duriel Tech. All rights reserved.
+            </p>
+        </div>
+    </footer>
 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const chartData = {{ chart_data|safe }};
+        const lastIndex = chartData.dates.length - 1;
+
+        const colors = {
+            BMI: 'rgba(59, 130, 246, 1)',
+            BMR: 'rgba(16, 185, 129, 1)',
+            TDEE: 'rgba(245, 158, 11, 1)',
+            MHR: 'rgba(139, 92, 246, 1)'
+        };
+
+        const datasets = ['BMI', 'BMR', 'TDEE', 'MHR'].map((metric, index) => ({
+            label: metric,
+            data: chartData[metric.toLowerCase()],
+            borderColor: colors[metric],
+            backgroundColor: colors[metric].replace('1)', '0.1)'),
+            tension: 0.4,
+            fill: true,
+            pointRadius: (ctx) => ctx.dataIndex === lastIndex ? 6 : 3,
+            pointBackgroundColor: (ctx) => ctx.dataIndex === lastIndex ? colors[metric] : 'white',
+            hidden: false
+        }));
+
+        // Custom plugin to draw BMI target range
+        const bmiTargetPlugin = {
+            id: 'bmiTargetRange',
+            beforeDraw(chart) {
+                const yAxis = chart.scales.y;
+                const ctx = chart.ctx;
+                const top = yAxis.getPixelForValue(24.9);
+                const bottom = yAxis.getPixelForValue(18.5);
+                ctx.save();
+                ctx.fillStyle = 'rgba(0, 255, 0, 0.08)';
+                ctx.fillRect(chart.chartArea.left, top, chart.chartArea.right - chart.chartArea.left, bottom - top);
+                ctx.restore();
+            }
+        };
+
+        const config = {
+            type: 'line',
+            data: {
+                labels: chartData.dates,
+                datasets: datasets
+            },
+            options: {
+                responsive: true,
+                interaction: {
+                    mode: 'index',
+                    intersect: false
+                },
+                stacked: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Your Health Progress'
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                if (context.dataset.label === 'BMI') {
+                                    label += context.parsed.y.toFixed(2);
+                                } else {
+                                    label += context.parsed.y;
+                                }
+                                return label;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: false,
+                        title: {
+                            display: true,
+                            text: 'Metric Value'
+                        }
+                    }
+                }
+            },
+            plugins: [bmiTargetPlugin]
+        };
+
+        const ctx = document.getElementById('healthProgressChart').getContext('2d');
+        const healthChart = new Chart(ctx, config);
+    </script>
 </body>
 </html>
