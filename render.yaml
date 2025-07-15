@@ -3,9 +3,11 @@ services:
     name: health-metric-app
     env: python
     buildCommand: |
-      echo "✅ Installing dependencies..."
       pip install -r requirements.txt
-    startCommand: ./start.sh
+    startCommand: |
+      python manage.py migrate --noinput &&
+      python manage.py collectstatic --noinput &&
+      gunicorn BMI_calculator.wsgi:application
     envVars:
       - key: DEBUG
         value: "False"
