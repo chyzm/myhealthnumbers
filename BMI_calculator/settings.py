@@ -34,7 +34,7 @@ SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
 DEBUG = os.getenv('DEBUG', '')
 
 # ALLOWED_HOSTS = ['']
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'health-metric-app.onrender.com', '[::1]']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'https://health-metric-app-production.up.railway.app/', '[::1]']
 
 
 
@@ -101,15 +101,17 @@ WSGI_APPLICATION = 'BMI_calculator.wsgi.application'
 #     }
 # }
 
-import dj_database_url
-import os
 
 import os
 import dj_database_url
 
 if os.environ.get('RENDER') == 'true':
     DATABASES = {
-        'default': dj_database_url.config(default=os.environ.get('DATABASE_URL'))
+         'default': dj_database_url.config(
+        default=os.environ.get('DATABASE_URL'),
+        conn_max_age=600,
+        ssl_require=True
+         )
     }
 else:
     DATABASES = {
