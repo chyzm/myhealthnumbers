@@ -1,4 +1,3 @@
-# railway.yaml
 services:
   - name: django-app
     startCommand: ./start.sh
@@ -6,7 +5,6 @@ services:
       pip install -r requirements.txt
       python manage.py collectstatic --noinput
       python manage.py migrate
-      python manage.py createsuperuser --noinput || true
     envVars:
       - key: DJANGO_SECRET_KEY
         value: 4om%rc413!hz@6xjcsykpzu88%1p696q@)-kl3^5tgl8hosu24
@@ -14,6 +12,7 @@ services:
         value: "False"
       - key: DATABASE_URL
         value: postgresql://postgres:eSxfavkeHvxWdIWfkKoiahqPHOkCaewH@postgres.railway.internal:5432/railway
+      # Add these superuser variables
       - key: DJANGO_SUPERUSER_USERNAME
         value: admin
       - key: DJANGO_SUPERUSER_EMAIL
