@@ -1,3 +1,4 @@
+# railway.yaml
 services:
   - name: django-app
     startCommand: ./start.sh
@@ -12,12 +13,5 @@ services:
         value: "False"
       - key: DATABASE_URL
         value: postgresql://postgres:eSxfavkeHvxWdIWfkKoiahqPHOkCaewH@postgres.railway.internal:5432/railway
-      # Add these superuser variables
-      - key: DJANGO_SUPERUSER_USERNAME
-        value: admin
-      - key: DJANGO_SUPERUSER_EMAIL
-        value: somtochiokaro@gmail.com
-      - key: DJANGO_SUPERUSER_PASSWORD
-        value: Legacy@90
     healthCheckPath: /
     rootDirectory: .
