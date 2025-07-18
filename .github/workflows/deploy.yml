@@ -1,42 +1,19 @@
-name: Deploy to Railway and Notify Slack
+name: Notify Slack on Push
 on:
   push:
     branches:
       - main
 jobs:
-  deploy:
+  notify:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v3
-      
-      - name: Install Railway CLI
-        run: |
-          curl -fsSL https://railway.app/install.sh | sh
-          echo "$HOME/.railway/bin" >> $GITHUB_PATH
-      
-      - name: Deploy to Railway
-        run: railway up
-        env:
-          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-      
-      - name: Notify Slack on Success
-        if: success()
+      - name: Notify Slack
         uses: rtCamp/action-slack-notify@v2
         env:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
           SLACK_COLOR: good
-          SLACK_TITLE: "✅ Railway Deployment Successful"
+          SLACK_TITLE: "🚀 Code Updated"
           SLACK_MESSAGE: |
-            🚀 Your app was successfully deployed to Railway!
+            📝 New code pushed to main branch
+            🔄 Railway will automatically deploy the changes
             🔗 <https://myhealthnumbers-production.up.railway.app/>
-      
-      - name: Notify Slack on Failure
-        if: failure()
-        uses: rtCamp/action-slack-notify@v2
-        env:
-          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-          SLACK_COLOR: danger
-          SLACK_TITLE: "❌ Deployment Failed"
-          SLACK_MESSAGE: |
-            😢 Something went wrong during the Railway deployment.
