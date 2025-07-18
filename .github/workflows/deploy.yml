@@ -1,26 +1,25 @@
 name: Deploy to Railway and Notify Slack
-
 on:
   push:
     branches:
       - main
-
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    container: ghcr.io/railwayapp/cli:latest
-
-    env:
-      SVC_ID: myhealthnumbers
-      RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-
     steps:
-      - name: Checkout Code
+      - name: Checkout Repository
         uses: actions/checkout@v3
-
+      
+      - name: Install Railway CLI
+        run: |
+          curl -fsSL https://railway.app/install.sh | sh
+          echo "$HOME/.railway/bin" >> $GITHUB_PATH
+      
       - name: Deploy to Railway
-        run: railway up --service="${{ env.SVC_ID }}"
-
+        run: railway up
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+      
       - name: Notify Slack on Success
         if: success()
         uses: rtCamp/action-slack-notify@v2
@@ -29,9 +28,9 @@ jobs:
           SLACK_COLOR: good
           SLACK_TITLE: "✅ Railway Deployment Successful"
           SLACK_MESSAGE: |
-            🚀 Deployment successful!
+            🚀 Your app was successfully deployed to Railway!
             🔗 <https://myhealthnumbers-production.up.railway.app/>
-
+      
       - name: Notify Slack on Failure
         if: failure()
         uses: rtCamp/action-slack-notify@v2
@@ -40,4 +39,4 @@ jobs:
           SLACK_COLOR: danger
           SLACK_TITLE: "❌ Deployment Failed"
           SLACK_MESSAGE: |
-            😢 Deployment failed! Check logs.
+            😢 Something went wrong during the Railway deployment.
