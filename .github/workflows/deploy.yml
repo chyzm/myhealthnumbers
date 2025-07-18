@@ -1,20 +1,42 @@
-- name: Notify Slack on Success
-  if: success()
-  uses: rtCamp/action-slack-notify@v2
-  env:
-    SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-    SLACK_COLOR: good
-    SLACK_TITLE: "✅ Railway Deployment Successful"
-    SLACK_MESSAGE: |
-      🚀 Your app was successfully deployed to Railway!
-      🔗 <https://myhealthnumbers-production.up.railway.app/>
+name: Deploy to Railway and Notify Slack
 
-- name: Notify Slack on Failure
-  if: failure()
-  uses: rtCamp/action-slack-notify@v2
-  env:
-    SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-    SLACK_COLOR: danger
-    SLACK_TITLE: "❌ Deployment Failed"
-    SLACK_MESSAGE: |
-      😢 Something went wrong during the Railway deployment.
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Deploy to Railway
+        uses: railwayapp/cli-action@v1
+        with:
+          command: up
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+
+      - name: Notify Slack on Success
+        if: success()
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_COLOR: good
+          SLACK_TITLE: "✅ Deployment Successful"
+          SLACK_MESSAGE: |
+            🚀 Deployed to Railway!
+            🔗 <https://myhealthnumbers-production.up.railway.app/>
+
+      - name: Notify Slack on Failure
+        if: failure()
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_COLOR: danger
+          SLACK_TITLE: "❌ Deployment Failed"
+          SLACK_MESSAGE: |
+            😢 Something went wrong with the Railway deploy.
