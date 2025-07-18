@@ -16,15 +16,34 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '16'
+          node-version: '18'  # Updated to current LTS version
 
       - name: Install Railway CLI
         run: npm install -g @railway/cli
 
-      - name: Deploy to Railway
-        run: railway up --detach
+      - name: Verify Railway CLI Installation
+        run: railway --version
+
+      - name: Login to Railway
+        run: railway login --token $RAILWAY_TOKEN
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+
+      - name: Deploy to Railway (with debug output)
+        id: deploy
+        run: |
+          set -x  # Enable debug output
+          railway up --detach 2>&1 | tee deploy.log
+          echo "DEPLOY_LOG=$(cat deploy.log | base64 -w0)" >> $GITHUB_OUTPUT
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+
+      - name: Upload Deployment Logs (for debugging)
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: railway-deployment-logs
+          path: deploy.log
 
       - name: Notify Slack on Success
         if: success()
@@ -45,4 +64,5 @@ jobs:
           SLACK_COLOR: danger
           SLACK_TITLE: "❌ Deployment Failed"
           SLACK_MESSAGE: |
-            😢 Something went wrong during the Railway deployment.
+            😢 Deployment failed. Check GitHub Actions logs for details.
+            📝 Logs artifact: railway-deployment-logs
