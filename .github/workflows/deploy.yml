@@ -3,7 +3,7 @@ name: Deploy to Railway and Notify Slack
 on:
   push:
     branches:
-      - main  # Trigger only on push to main
+      - main
 
 jobs:
   deploy:
@@ -29,13 +29,21 @@ jobs:
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
 
+      - name: 🔗 Link Railway Project (skip if already linked in repo)
+        run: railway link --project $RAILWAY_PROJECT_ID
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+          RAILWAY_PROJECT_ID: ${{ secrets.RAILWAY_PROJECT_ID }}
+
       - name: 🚢 Deploy to Railway
         id: deploy
         run: |
-          set -e  # Stop on error
-          railway up --detach
+          echo "🔄 Starting deployment..."
+          railway up --detach --service $RAILWAY_SERVICE_NAME
+          echo "✅ Deployment triggered successfully."
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+          RAILWAY_SERVICE_NAME: ${{ secrets.RAILWAY_SERVICE_NAME }}
 
       - name: 📣 Notify Slack on Success
         if: success()
