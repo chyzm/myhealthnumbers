@@ -19,3 +19,5 @@
     SLACK_TITLE: "❌ Deployment Failed"
     SLACK_MESSAGE: |
       😢 Something went wrong during the Railway deployment.
+
+
