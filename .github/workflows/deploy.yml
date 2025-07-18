@@ -8,17 +8,18 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    container: ghcr.io/railwayapp/cli:latest
+
+    env:
+      SVC_ID: myhealthnumbers
+      RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
 
     steps:
-      - name: Checkout Repository
+      - name: Checkout Code
         uses: actions/checkout@v3
 
       - name: Deploy to Railway
-        uses: railwayapp/cli@v1   # ✅ FIXED HERE
-        with:
-          command: up
-        env:
-          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        run: railway up --service="${{ env.SVC_ID }}"
 
       - name: Notify Slack on Success
         if: success()
@@ -28,7 +29,7 @@ jobs:
           SLACK_COLOR: good
           SLACK_TITLE: "✅ Railway Deployment Successful"
           SLACK_MESSAGE: |
-            🚀 Your app was successfully deployed to Railway!
+            🚀 Deployment successful!
             🔗 <https://myhealthnumbers-production.up.railway.app/>
 
       - name: Notify Slack on Failure
@@ -39,4 +40,4 @@ jobs:
           SLACK_COLOR: danger
           SLACK_TITLE: "❌ Deployment Failed"
           SLACK_MESSAGE: |
-            😢 Something went wrong during the Railway deployment.
+            😢 Deployment failed! Check logs.
