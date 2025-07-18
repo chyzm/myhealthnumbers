@@ -66,13 +66,14 @@ jobs:
             🚀 Deployment to Railway was triggered.
             🔗 <https://myhealthnumbers-production.up.railway.app/>
 
-      - name: ❗ Notify Slack on Failure
-        if: failure()
+      - name: ❗ Notify Slack on CLI Failure Only
+        if: steps.deploy.outcome == 'failure'
         uses: rtCamp/action-slack-notify@v2
         env:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
           SLACK_COLOR: danger
           SLACK_TITLE: "❌ Railway Deployment Failed"
           SLACK_MESSAGE: |
-            😢 GitHub Actions marked the deployment as failed.
-            🧾 Check logs for more info, or confirm success on the Railway dashboard.
+            😢 Deployment step failed.
+            🧾 Check GitHub Actions logs or Railway dashboard for real status.
+
