@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Code
+      - name: Checkout Repository
         uses: actions/checkout@v3
 
       - name: Deploy to Railway
@@ -26,9 +26,9 @@ jobs:
         env:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
           SLACK_COLOR: good
-          SLACK_TITLE: "✅ Deployment Successful"
+          SLACK_TITLE: "✅ Railway Deployment Successful"
           SLACK_MESSAGE: |
-            🚀 Deployed to Railway!
+            🚀 Your app was successfully deployed to Railway!
             🔗 <https://myhealthnumbers-production.up.railway.app/>
 
       - name: Notify Slack on Failure
@@ -39,4 +39,4 @@ jobs:
           SLACK_COLOR: danger
           SLACK_TITLE: "❌ Deployment Failed"
           SLACK_MESSAGE: |
-            😢 Something went wrong with the Railway deploy.
+            😢 Something went wrong during the Railway deployment.
