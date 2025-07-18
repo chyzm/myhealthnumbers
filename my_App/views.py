@@ -87,23 +87,30 @@ def registerUser(request):
 @login_required
 def edit_profile(request):
     user = request.user
-    profile = user.userprofile
+    try:
+        profile = user.userprofile
+    except UserProfile.DoesNotExist:
+        profile = UserProfile.objects.create(user=user)
     
     if request.method == 'POST':
         form = UserProfileForm(request.POST, request.FILES, instance=profile)
         if form.is_valid():
-            form.save()
-            messages.success(request, 'Profile updated successfully!')
-            return redirect('myAccount')
+            try:
+                form.save()
+                messages.success(request, 'Profile updated successfully!')
+                return redirect('myAccount')
+            except Exception as e:
+                messages.error(request, f'Error saving profile: {str(e)}')
+        else:
+            messages.error(request, 'Please correct the errors below.')
     else:
         form = UserProfileForm(instance=profile)
     
     context = {
         'form': form,
-        'first_name': user.first_name,
+        'user': user,
     }
     return render(request, 'edit_profile.html', context)
-
     
    
 
