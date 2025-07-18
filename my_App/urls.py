@@ -1,6 +1,9 @@
+from BMI_calculator import settings
 from . import views
 from django.urls import path
 from django.contrib.auth import views as auth_views
+from django.conf.urls.static import static
+
 
 
 
@@ -43,4 +46,4 @@ urlpatterns = [
     path('dashboard/', views.dashboard, name='dashboard'),
     path('health/chart/', views.health_chart_view, name='healthChart'),
 
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
