@@ -2,7 +2,7 @@
   if: success()
   uses: rtCamp/action-slack-notify@v2
   env:
-    SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+    SLACK_WEBHOOK: ${{ secrets.https://hooks.slack.com/services/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 }}
     SLACK_COLOR: good
     SLACK_TITLE: "✅ Railway Deployment Successful"
     SLACK_MESSAGE: |
@@ -14,7 +14,7 @@
   if: failure()
   uses: rtCamp/action-slack-notify@v2
   env:
-    SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+    SLACK_WEBHOOK: ${{ secrets.https://hooks.slack.com/services/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 }}
     SLACK_COLOR: danger
     SLACK_TITLE: "❌ Deployment Failed"
     SLACK_MESSAGE: |
